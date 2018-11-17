@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather 👀</title>
+  <style>
+      #dataTable{
+          display: flex;
+         /* border: 1px solid red;*/
+         border-radius: 1%;
+         overflow: hidden;
+      }
+
+      .day{
+         /* border: 1px solid blue; */
+          flex: 1;
+          
+          background: linear-gradient(135deg, #d0e4f7 1%,#73b1e7 9%,#2a87d3 45%,#539fe1 79%,#87bcea 100%);
+      }
+
+      .timeBlock{
+         /* border:gray 1px solid; */
+          flex: 3;
+      }
+
+      .date{
+          font-weight: bold;
+          font-size: 1.5em;
+      }
+
+      .timeBlock, .date{
+          padding: 10px;
+          display: flex;
+          border-bottom: solid 1px #73b1e7;
+      }
+
+      .imgblock{
+          flex: 1;
+          background-clip: content-box !important;
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          border: 2px white solid;
+          border-radius: 10%;
+      }
+
+      .dataClass{
+          flex: 2;
+          padding-left: 10px;
+      }
+
+      .weatherType, WeatherTemp{
+          margin-top: 10px;
+          margin-bottom: 10px;
+      }
+
+.weatherTime{
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+
+  
+  </style>
+</head>
+<body>
+
+<div id='dataTable'>Please wait</div>
+
+  
+<script>
+const dataTable = document.getElementById('dataTable');
+const endpoint = 'http://datapoint.metoffice.gov.uk/public/data/val/wxfcs/all/json/353722?res=3hourly&key=fa6de662-a464-4aee-8a1f-dde3b87105b3';
+const conditions = [];
+conditions['NA'] = 'Not available';
+conditions['0'] = 'Clear';
+conditions['1'] = 'Sunny';
+conditions['2'] = 'Partly cloudy';
+conditions['3'] = 'Partly cloudy';
+conditions['5'] = 'Mist';
+conditions['6'] = 'Fog';
+conditions['7'] = 'Cloudy';
+conditions['8'] = 'Overcast';
+conditions['9'] = 'Light rain shower';
+conditions['10'] = 'Light rain shower';
+conditions['11'] = 'Drizzle';
+conditions['12'] = 'Light rain';
+conditions['13'] = 'Heavy rain shower';
+conditions['14'] = 'Heavy rain shower';
+conditions['15'] = 'Heavy rain';
+conditions['16'] = 'Sleet shower';
+conditions['17'] = 'Sleet shower';
+conditions['18'] = 'Sleet';
+conditions['19'] = 'Hail shower';
+conditions['20'] = 'Hail shower';
+conditions['21'] = 'Hail';
+conditions['22'] = 'Light snow shower';
+conditions['23'] = 'Light snow shower';
+conditions['24'] = 'Light snow';
+conditions['25'] = 'Heavy snow shower';
+conditions['26'] = 'Heavy snow shower';
+conditions['27'] = 'Heavy snow';
+conditions['28'] = 'Thunder shower';
+conditions['29'] = 'Thunder shower';
+conditions['30'] = 'Thunder';
+
+
+fetch(endpoint)
+.then(blob => blob.json())
+.then(data => outputData(data.SiteRep.DV.Location.Period));
+
+
+function outputData(weather){
+dataTable.innerHTML = '';
+console.log(weather);
+weather.forEach(day => writeRow(day));
+}
+
+function writeRow(row){
+    console.log(row);
+    var rowString = '';
+    rowString += `<div class="day"><div class="date">${row.value.substring(0, row.value.length-1)}</div>`;
+    row.Rep.forEach(function(hrData){
+        rowString += `<div class="timeBlock"><div class="imgblock"  style="background:url(${hrData.W}.jpg)""></div>`;
+        rowString += `<div class="dataClass"><div class="weatherTime">${minutesToHours(hrData.$)}:00</div>`;
+        rowString += `<div class="weatherType">${conditions[hrData.W]}</div>`;
+        rowString += `<div class="weatherTemp">${hrData.T}c</div></div>`
+        rowString += `</div>`;
+    });
+    rowString += `</div>`;
+dataTable.innerHTML += rowString;
+
+}
+
+function minutesToHours(mins){
+    return Math.floor(mins/60);
+}
+
+
+</script>
+
+  </body>
+</html>
