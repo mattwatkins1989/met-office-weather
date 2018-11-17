@@ -112,12 +112,13 @@ fetch(endpoint)
 
 function outputData(weather){
 dataTable.innerHTML = '';
-console.log(weather);
+//console.log(weather);
 weather.forEach(day => writeRow(day));
 }
 
+
 function writeRow(row){
-    console.log(row);
+    //console.log(row);
     var rowString = '';
     rowString += `<div class="day"><div class="date">${row.value.substring(0, row.value.length-1)}</div>`;
     row.Rep.forEach(function(hrData){
